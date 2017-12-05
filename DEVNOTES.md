@@ -18,4 +18,4 @@ People who have contributed to the project:
 ## References
 When publishing results obtained with NORSE, please cite the following paper:
 
-[1] Stahl A., Landreman M., Embréus O. and Fülöp T. **2017** *Comput. Phys. Comm.* [https://doi.org/10.1016/j.cpc.2016.10.024](212 269-79)
+[1] Stahl A., Landreman M., Embréus O. and Fülöp T. **2017** *Comput. Phys. Comm.* [212 269-79](https://doi.org/10.1016/j.cpc.2016.10.024)
