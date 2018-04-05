@@ -78,8 +78,8 @@ function DistMovie2D(o,varargin)
         title(sprintf('$\\tau=%.3f$ (relativistic coll. times)',...
                                 oN.times(i)),'Interpreter','latex');
         hC = colorbar;
-        hC.Label.String = '$\log_{10}(F)$';
         hC.Label.Interpreter = 'Latex';
+        hC.Label.String = '$\log_{10}(F)$';
         axis equal
 
         %Make sure the colour scale is consistent

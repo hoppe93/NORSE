@@ -101,8 +101,8 @@ function Dist2D(o,varargin)
     ylabel('$p_\perp$','Interpreter','latex')                        
 
     hC = colorbar;
-    hC.Label.String = '$\log_{10}(F)$';
     hC.Label.Interpreter = 'Latex';
+    hC.Label.String = '$\log_{10}(F)$';
 
     title(sprintf('$\\tau = %.3g$ (relativistic coll. times)',...
                         oN.times(iteration)),'Interpreter','latex');
@@ -125,8 +125,8 @@ function Dist2D(o,varargin)
     ylabel('$p$','Interpreter','latex');
 
     hC = colorbar;
-    hC.Label.String = '$\log_{10}(F)$';
     hC.Label.Interpreter = 'Latex';
+    hC.Label.String = '$\log_{10}(F)$';
 
     title(sprintf('$\\tau = %.3g$ (relativistic coll. times)',...
                         oN.times(iteration)),'Interpreter','latex');
