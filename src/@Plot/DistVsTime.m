@@ -86,6 +86,6 @@ function DistVsTime(o,varargin)
     ylabel('$\tau$','Interpreter','latex');
     colormap(o.ColorMap(numel(contours)));
     hC = colorbar;
-    hC.Label.String = '$\log_{10}(F)$';
     hC.Label.Interpreter = 'Latex';
+    hC.Label.String = '$\log_{10}(F)$';
 end
