@@ -1,7 +1,8 @@
-function Initialize(o)
+function Initialize(o, varargin)
     % Initializes variables and sets up parameters and flags.
     % Usage: 
     %   Initialize()
+    %   Initialize(useExternalDistribution)
     %
     % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -173,6 +174,15 @@ function Initialize(o)
             o.f(:,1) = o.grid.MapGridToBigVector(...
                                     o.maxwellianPreFactor(0)*f0);
             o.Print('two shifted Maxwellians.\n');
+        case 4
+            %External distribution
+            if nargin == 2
+                o.f(:,1) = varargin{1};
+                o.Print('an externally given distribution.\n');
+            else
+                o.Print('incorrectly given.\n');
+                error('Invalid number of input arguments.');
+            end
         otherwise
             error('Invalid initial distribution');
     end        
