@@ -2,7 +2,13 @@ function Initialize(o, varargin)
     % Initializes variables and sets up parameters and flags.
     % Usage: 
     %   Initialize()
-    %   Initialize(useExternalDistribution)
+    %   Initialize(useExternalInput)
+    %
+    % For case 4 of the initialDistribution parameter an externally given
+    % distribution and two grid vectors must be provided in a
+    % structure form, with the the three inputs being three separate fields
+    % of the named structure. For more detail please check case 4 of the
+    % initialDistribution initialization.
     %
     % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -151,7 +157,7 @@ function Initialize(o, varargin)
             o.f(:,1) = o.MapLegModesToBigVector(initialF);
             o.Print('a weighted Maxwellian.\n');
         case 2  
-            %A shifted Mawellian   
+            %A shifted Maxwellian   
             pShift = o.maxwellianShift*sqrt(2*o.Theta(0));
             gamma0 = sqrt(1+pShift^2);
             gamma = sqrt(1+o.grid.p2D.^2);
@@ -161,7 +167,7 @@ function Initialize(o, varargin)
                                     o.maxwellianPreFactor(0)*f0);
             o.Print('a shifted Maxwellian.\n');
         case 3  
-            %Two shifted Mawellians                    
+            %Two shifted Maxwellians                    
             yShift = o.maxwellianShift;
 
             pShift1 = yShift*sqrt(2*o.Theta(0));
@@ -176,15 +182,22 @@ function Initialize(o, varargin)
             o.Print('two shifted Maxwellians.\n');
         case 4
             %External distribution
-            if nargin == 2
-                o.f(:,1) = varargin{1};
-                o.Print('an externally given distribution.\n');
+            %As an input, a structure must be given, with three fields
+            %corresponding to f, extPBig, extXiBig.
+            %Check if the external grid is the same as the created
+            if varargin{1}.extPBig == o.grid.pBig & varargin{1}.extXiBig == o.grid.xiBig
+                if nargin == 2
+                    o.f(:,1) = varargin{1}.f;
+                    o.Print('an externally given distribution.\n');
+                else
+                    error('Invalid number of input arguments.');
+                end
             else
-                o.Print('incorrectly given.\n');
-                error('Invalid number of input arguments.');
+                % To be written..
+                error('Interpolation required.');
             end
         otherwise
-            error('Invalid initial distribution');
+            error('Invalid initialDistribution parameter');
     end        
 
     %Calculate the potentials from f and save the the initial state

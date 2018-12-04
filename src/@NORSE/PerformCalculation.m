@@ -6,80 +6,47 @@ function PerformCalculation(o, varargin)
     % Usage:
     %   PerformCalculation() 
     %   PerformCalculation(useExistingGrid)
+    %   PerformCalculation(useExternalInput)
+    %   PerformCalculation(useExistingGrid, useExternalInput)
+    %
+    % The useExternalInput variable is a structure with fields
+    % corresponding to the external distribution and external grid vectors.
+    % For more detail, please see Initialize.m.
     %
     % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
     tStart = tic;
-    %separate cases according to the need for external distribuiton
-    switch o.initialDistribution
-        case 0
-            if nargin==2 && varargin{1}
-                %Use an existing grid object, but make sure it is initialized
-                o.grid.InitializeGrid();
-            else
-                %Create a new grid object
-                o.grid = Grid(o);
-            end
-            o.Initialize();
-            o.timeAdvance.AdvanceInTime();                    
-            o.PostProcess();
-            o.timing.total = toc(tStart);
-            o.PrintTimings();
-        case 1
-            if nargin==2 && varargin{1}
-                %Use an existing grid object, but make sure it is initialized
-                o.grid.InitializeGrid();
-            else
-                %Create a new grid object
-                o.grid = Grid(o);
-            end
-            o.Initialize();
-            o.timeAdvance.AdvanceInTime();                    
-            o.PostProcess();
-            o.timing.total = toc(tStart);
-            o.PrintTimings();
-        case 2
-            if nargin==2 && varargin{1}
-                %Use an existing grid object, but make sure it is initialized
-                o.grid.InitializeGrid();
-            else
-                %Create a new grid object
-                o.grid = Grid(o);
-            end
-            o.Initialize();
-            o.timeAdvance.AdvanceInTime();                    
-            o.PostProcess();
-            o.timing.total = toc(tStart);
-            o.PrintTimings();
-        case 3
-            if nargin==2 && varargin{1}
-                %Use an existing grid object, but make sure it is initialized
-                o.grid.InitializeGrid();
-            else
-                %Create a new grid object
-                o.grid = Grid(o);
-            end
-            o.Initialize();
-            o.timeAdvance.AdvanceInTime();                    
-            o.PostProcess();
-            o.timing.total = toc(tStart);
-            o.PrintTimings();
-        case 4
-            if nargin==3 && varargin{1}
-                %Use an existing grid object, but make sure it is initialized
-                o.grid.InitializeGrid();
-                o.Initialize(varargin{2});
-            elseif nargin==2 
-                %Create a new grid object
-                o.grid = Grid(o);
-                o.Initialize(varargin{1});
-            end
-            o.timeAdvance.AdvanceInTime();                    
-            o.PostProcess();
-            o.timing.total = toc(tStart);
-            o.PrintTimings();
-        otherwise
-            error('Invalid initial distribution.');
+    %Separate cases according to the need for external distribuiton
+    if o.initialDistribution >= 0 && o.initialDistribution <=3
+        if nargin==2 && varargin{1}
+            %Use an existing grid object, but make sure it is initialized
+            o.grid.InitializeGrid();
+        else
+            %Create a new grid object
+            o.grid = Grid(o);
+        end
+        o.Initialize();
+    elseif o.initialDistribution == 4
+        % This case requires external distribution and grid vectors given
+        % to the Initialize method. See Initialize.m for more details.
+        if nargin==3 && varargin{1}
+            %Use an existing grid object, but make sure it is initialized
+            o.grid.InitializeGrid();
+            o.Initialize(varargin{2});
+        elseif nargin==2 
+            %Create a new grid object
+            o.grid = Grid(o);
+            o.Initialize(varargin{1});
+        else
+            error('Invalid number of input arguments.');
+        end
+            
+    else
+       error('Invalid initial distribution.');
     end
+    o.timeAdvance.AdvanceInTime();                    
+    o.PostProcess();
+    o.timing.total = toc(tStart);
+    o.PrintTimings();
 end
