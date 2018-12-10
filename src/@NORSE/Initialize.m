@@ -185,7 +185,7 @@ function Initialize(o, varargin)
             %As an input, a structure must be given, with three fields
             %corresponding to f, extPBig, extXiBig.
             %Check if the external grid is the same as the created
-            if varargin{1}.extPBig == o.grid.pBig & varargin{1}.extXiBig == o.grid.xiBig
+            if varargin{1}.extPBig-o.grid.pBig<1e-12 & varargin{1}.extXiBig-o.grid.xiBig<1e-12
                 if nargin == 2
                     o.f(:,1) = varargin{1}.f;
                     o.Print('an externally given distribution.\n');
