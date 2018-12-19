@@ -187,8 +187,10 @@ function Initialize(o, varargin)
             
             % Check if the external grid is the same as the created
             % Create a logical variable
-            identicalGrid = max((varargin{1}.extPBig-o.grid.pBig)./varargin{1}.extPBig)<1e-12...
-                &&  max((varargin{1}.extXiBig-o.grid.xiBig)./varargin{1}.extXiBig)< 1e-12;
+            % Set a limit to the difference
+            limit = 1e-12;
+            identicalGrid = max((varargin{1}.extPBig-o.grid.pBig)./varargin{1}.extPBig)<limit...
+                &&  max((varargin{1}.extXiBig-o.grid.xiBig)./varargin{1}.extXiBig)< limit;
             
             if identicalGrid
                 if nargin == 2
