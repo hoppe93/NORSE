@@ -11,7 +11,7 @@ function PerformCalculation(o, varargin)
     %
     % The useExternalInput variable is a structure with fields
     % corresponding to the external distribution and external grid vectors.
-    % For more detail, please see Initialize.m.
+    % For more details, please see Initialize.m.
     %
     % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -33,14 +33,14 @@ function PerformCalculation(o, varargin)
         if nargin==3 && varargin{1}
             %Use an existing grid object, but make sure it is initialized
             o.grid.InitializeGrid();
-            o.Initialize(varargin{2});
         elseif nargin==2 
             %Create a new grid object
             o.grid = Grid(o);
-            o.Initialize(varargin{1});
         else
             error('Invalid number of input arguments.');
         end
+        % The last input argument is the external data
+        o.Initialize(varargin{end});
             
     else
        error('Invalid initial distribution.');

@@ -181,16 +181,21 @@ function Initialize(o, varargin)
                                     o.maxwellianPreFactor(0)*f0);
             o.Print('two shifted Maxwellians.\n');
         case 4
-            %External distribution
-            %As an input, a structure must be given, with three fields
-            %corresponding to f, extPBig, extXiBig.
-            %Check if the external grid is the same as the created
-            if varargin{1}.extPBig-o.grid.pBig<1e-12 & varargin{1}.extXiBig-o.grid.xiBig<1e-12
+            % External distribution
+            % As an input, a structure must be given, with three fields
+            % corresponding to f, extPBig, extXiBig.
+            
+            % Check if the external grid is the same as the created
+            % Create a logical variable
+            identicalGrid = max((varargin{1}.extPBig-o.grid.pBig)./varargin{1}.extPBig)<1e-12...
+                &&  max((varargin{1}.extXiBig-o.grid.xiBig)./varargin{1}.extXiBig)< 1e-12;
+            
+            if identicalGrid
                 if nargin == 2
                     o.f(:,1) = varargin{1}.f;
                     o.Print('an externally given distribution.\n');
                 else
-                    error('Invalid number of input arguments.');
+                    error('Invalid number of input arguments for external distribution.');
                 end
             else
                 % To be written..
