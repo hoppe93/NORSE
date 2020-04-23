@@ -186,13 +186,26 @@ function Initialize(o, varargin)
             % corresponding to f, extPBig, extXiBig.
             
             % Check if the external grid is the same as the created
-            % Create a logical variable
             % Set a limit to the difference
             limit = 1e-12;
-            identicalGrid = max((varargin{1}.extPBig-o.grid.pBig)./varargin{1}.extPBig)<limit...
-                &&  max((varargin{1}.extXiBig-o.grid.xiBig)./varargin{1}.extXiBig)< limit;
+
+            % Check if the gird dimensions ar the same
+            pDim = abs(varargin{1}.g.nP - o.grid.nP);
+            xiDim = abs(varargin{1}.g.nXi - o.grid.nXi);
+            maxDim = abs(varargin{1}.g.pMax - o.grid.pMax);
+
+            dimensions = max([pDim, xiDim, maxDim]);
+
+            if dimensions == 0
+                % If the dimesnions are the same, check if the grid points are the identical
+                identicalGrid = max(abs((varargin{1}.extPBig-o.grid.pBig)./varargin{1}.extPBig))<limit...
+                   &&  max(abs((varargin{1}.extXiBig-o.grid.xiBig)./varargin{1}.extXiBig))< limit;
+            else
+                identicalGrid = 0;
+            end
             
             if identicalGrid
+                % If grid is identical, use the external dstribution directly
                 if nargin == 2
                     o.f(:,1) = varargin{1}.f;
                     o.Print('an externally given distribution.\n');
@@ -200,8 +213,11 @@ function Initialize(o, varargin)
                     error('Invalid number of input arguments for external distribution.');
                 end
             else
-                % To be written..
-                error('Interpolation required.');
+                % Interpolate distribution to the initialized NORSE grid otherwise
+                f2D = interp2(varargin{1}.g.xi2D, varargin{1}.g.p2D, varargin{1}.f2D, o.grid.xi2D, o.grid.p2D);
+                f = o.grid.MapGridToBigVector(f2D);
+                o.f(:,1) = f;
+                o.Print('an externally given distribution interpolated to the NORSE grid.\n');
             end
         otherwise
             error('Invalid initialDistribution parameter');
