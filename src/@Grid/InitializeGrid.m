@@ -36,7 +36,7 @@ function InitializeGrid(o)
                 p = s.^4+o.pGridParameter*s;
                 dpds = 4*s.^3+o.pGridParameter;
                 d2pds2 = 12*s.^2;                        
-            case 4 %A grid with a step in spacing, giving a dense 
+            case 4 %A grid with a tanh step in spacing, giving a dense 
                    %grid at low p and a sparse grid at high p                        
                 [p,dpds,d2pds2] = o.DefineStepMapping(s);                              
             otherwise

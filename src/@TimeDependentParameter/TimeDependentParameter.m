@@ -72,7 +72,7 @@ classdef TimeDependentParameter
             %   par = TimeDependentParameter(t,f,isStepWiseConst,isConstOutsideRange); 
             
             if ~all(size(t) == size(f)) || ~isvector(t) || ~isnumeric(t) || ~isnumeric(f)
-                error('Invalid input argument dimenstions.');
+                error('Invalid input argument dimensions.');
             end
             if nargin >= 4  
                 if isscalar(varargin{1}) && isnumeric(varargin{1}) ...

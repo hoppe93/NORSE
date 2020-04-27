@@ -453,7 +453,7 @@ classdef NORSE < matlab.mixin.Copyable
         Rewind(o,iSave)
             % Make an intermediate save step the final step, i.e. "rewind"
             % the calculation to a previous state. 
-        Initialize(o)
+        Initialize(o, varargin)
             % Initializes variables and sets up parameters and flags.            
         AdvanceInTime(o,varargin)
             % Interface method for the various underlying time-advance

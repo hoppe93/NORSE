@@ -1,7 +1,14 @@
-function Initialize(o)
+function Initialize(o, varargin)
     % Initializes variables and sets up parameters and flags.
     % Usage: 
     %   Initialize()
+    %   Initialize(useExternalInput)
+    %
+    % For case 4 of the initialDistribution parameter an externally given
+    % distribution and two grid vectors must be provided in a
+    % structure form, with the the three inputs being three separate fields
+    % of the named structure. For more detail please check case 4 of the
+    % initialDistribution initialization.
     %
     % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -150,7 +157,7 @@ function Initialize(o)
             o.f(:,1) = o.MapLegModesToBigVector(initialF);
             o.Print('a weighted Maxwellian.\n');
         case 2  
-            %A shifted Mawellian   
+            %A shifted Maxwellian   
             pShift = o.maxwellianShift*sqrt(2*o.Theta(0));
             gamma0 = sqrt(1+pShift^2);
             gamma = sqrt(1+o.grid.p2D.^2);
@@ -160,7 +167,7 @@ function Initialize(o)
                                     o.maxwellianPreFactor(0)*f0);
             o.Print('a shifted Maxwellian.\n');
         case 3  
-            %Two shifted Mawellians                    
+            %Two shifted Maxwellians                    
             yShift = o.maxwellianShift;
 
             pShift1 = yShift*sqrt(2*o.Theta(0));
@@ -173,8 +180,47 @@ function Initialize(o)
             o.f(:,1) = o.grid.MapGridToBigVector(...
                                     o.maxwellianPreFactor(0)*f0);
             o.Print('two shifted Maxwellians.\n');
+        case 4
+            % External distribution
+            % As an input, a structure must be given, with three fields
+            % corresponding to f, extPBig, extXiBig.
+            
+            % Check if the external grid is the same as the created
+            % Set a limit to the difference
+            limit = 1e-12;
+
+            % Check if the gird dimensions ar the same
+            pDim = abs(varargin{1}.g.nP - o.grid.nP);
+            xiDim = abs(varargin{1}.g.nXi - o.grid.nXi);
+            maxDim = abs(varargin{1}.g.pMax - o.grid.pMax);
+
+            dimensions = max([pDim, xiDim, maxDim]);
+
+            if dimensions == 0
+                % If the dimesnions are the same, check if the grid points are the identical
+                identicalGrid = max(abs((varargin{1}.extPBig-o.grid.pBig)./varargin{1}.extPBig))<limit...
+                   &&  max(abs((varargin{1}.extXiBig-o.grid.xiBig)./varargin{1}.extXiBig))< limit;
+            else
+                identicalGrid = 0;
+            end
+            
+            if identicalGrid
+                % If grid is identical, use the external dstribution directly
+                if nargin == 2
+                    o.f(:,1) = varargin{1}.f;
+                    o.Print('an externally given distribution.\n');
+                else
+                    error('Invalid number of input arguments for external distribution.');
+                end
+            else
+                % Interpolate distribution to the initialized NORSE grid otherwise
+                f2D = interp2(varargin{1}.g.xi2D, varargin{1}.g.p2D, varargin{1}.f2D, o.grid.xi2D, o.grid.p2D);
+                f = o.grid.MapGridToBigVector(f2D);
+                o.f(:,1) = f;
+                o.Print('an externally given distribution interpolated to the NORSE grid.\n');
+            end
         otherwise
-            error('Invalid initial distribution');
+            error('Invalid initialDistribution parameter');
     end        
 
     %Calculate the potentials from f and save the the initial state
