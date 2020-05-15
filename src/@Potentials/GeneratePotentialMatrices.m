@@ -14,7 +14,8 @@ function GeneratePotentialMatrices(o)
     nL = o.norse.nL;
 
     %Helper function for diagonal matrices, to reduce clutter
-    dia = @(v) spdiags(v,0,nP,nP);
+    %dia = @(v) spdiags(v,0,nP,nP);
+    dia = @(v) diag(v,0);
     o.La_lBase = dia(gamma2)*o.grid.d2dp2 + dia(2./p+3*p)*o.grid.ddp;
 
     o.CalculateJAndY();            

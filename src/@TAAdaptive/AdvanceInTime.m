@@ -39,6 +39,7 @@ function AdvanceInTime(o,varargin)
     tStartLoop  = tic;                
     while sT.t <= (o.tMax + sT.dt)
         isSaveStep = (sT.t >= o.timesToSave(iSave));
+        o.iTimeStep = iSave;
 
         o.PrintProgress(isSaveStep,iSave,sT.stepCounter);
         o.UpdateKineticEquation(fOld,sT.t,sT.tOld); %Build the system to solve

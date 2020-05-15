@@ -34,13 +34,14 @@ function AdvanceInTime(o,varargin)
         t = o.allTimes(iteration);
         tOld = o.allTimes(iteration-1);
         isSaveStep = (iteration == o.idsToSave(iSave));
+        o.iTimeStep = iSave;
 
         o.PrintProgress(isSaveStep,iSave,iteration); 
         o.UpdateKineticEquation(fOld,t,tOld); %Build the system to solve
 
         %Take a time step      
-        tStartInv = tic;         
-        fOld      = o.matrix \ o.rhs;               
+        tStartInv = tic;
+        fOld      = o.matrix \ o.rhs;
         tEndInv   = tEndInv+toc(tStartInv);
 
         if isSaveStep %Save the current state 

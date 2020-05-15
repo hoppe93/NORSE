@@ -28,7 +28,24 @@ function [fOld,EHatInd] = TakeNewtonStep(o,fOld,EHatInd)
     D(end,end)   = 1;
     
     %Solve for the updated state
-    state   = [fOld;EHatInd] - D\R;
-    fOld    = state(1:end-1);
-    EHatInd = state(end);    
+    if o.useMumps
+        o.MUMPSAnalyze(D);
+
+        % 2. Factorization & 3. Solution
+        if o.thresholdPivoting >= 0
+            o.mumpsInfo.CNTL(1) = o.thresholdPivoting;
+        end
+
+        if o.precinv >= 0
+            o.mumpsInfo.CNTL(2) = o.precinv;
+        end
+
+        state = [fOld;EHatInd] - o.MUMPSSolve(D, R);
+        fOld    = state(1:end-1);
+        EHatInd = state(end);
+    else
+        state   = [fOld;EHatInd] - D\R;
+        fOld    = state(1:end-1);
+        EHatInd = state(end);
+    end
 end

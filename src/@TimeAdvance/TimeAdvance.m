@@ -59,6 +59,9 @@ classdef (Abstract) TimeAdvance < matlab.mixin.Copyable
         %Elements of the kinetic equation
         matrix
         rhs
+        
+        %Index of current timestep
+        iTimeStep
     end
     
     methods 

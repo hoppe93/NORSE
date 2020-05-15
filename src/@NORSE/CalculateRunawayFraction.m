@@ -14,7 +14,12 @@ function varargout = CalculateRunawayFraction(o,iteration)
     % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     time = o.times(iteration);
-    EEc = o.EHat(time);    
+    EEc = o.EHat(time);
+    
+    if o.timeAdvanceMode == 3
+        EHatInd = o.EHatInductive(o.timeAdvance.iTimeStep-1);
+        EEc = EEc + EHatInd;
+    end
 
     %Recalculate the lower boundary of the runaway region if EHat
     %has changed or the non-linearly valid definition is used
@@ -30,7 +35,7 @@ function varargout = CalculateRunawayFraction(o,iteration)
                 if EEc>1
                     pc = 1/sqrt(o.EHat(time)-1);
                     idBound = find(o.grid.p>pc,1);                            
-                    mask(idBound:end,:) = 1; 
+                    mask(idBound:end,:) = 1;
                     pcs = pc*ones(size(o.runawayRegion.pcs));
                 end                        
             case 1 %Force-balance, xi-dependent

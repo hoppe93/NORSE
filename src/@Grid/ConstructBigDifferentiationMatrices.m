@@ -15,6 +15,6 @@ function ConstructBigDifferentiationMatrices(o)
     o.d2dpdxiMat = o.BuildBigMatrix(o.ddxi,o.ddp,0);    
 
     %Integrals over the grid (including Jacobian)   
-    o.intdp = o.BuildBigVector(ones(size(o.xi))',4*pi*o.p'.^2.*o.pWeights'); 
+    o.intdp = o.BuildBigVector(ones(size(o.xi))',4*pi*o.p'.^2.*o.pWeights');
     o.intdpdxi = o.BuildBigVector(o.xiWeights',2*pi*o.p'.^2.*o.pWeights');
 end 

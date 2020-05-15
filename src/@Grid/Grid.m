@@ -215,6 +215,7 @@ classdef Grid < matlab.mixin.Copyable
         d2dxi2Mat
         d2dpdxiMat
         intdp
+        intdxi
         intdpdxi         
         
     end

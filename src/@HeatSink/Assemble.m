@@ -26,7 +26,8 @@ function Assemble(o,varargin)
     p = o.grid.pBig;                
     switch oN.heatSinkFunction
         case 0 %Relativistic Maxwellian
-            width = 1; %Small: wide sink, large: narrow sink
+            width = oN.heatSinkMaxwellianWidth; %Small: wide sink, large: narrow sink
+            %disp(['   Heat-sink Maxwellian width is ',num2str(width)]);
             SH = oN.maxwellianPreFactor(t) ...
                     * exp(-width*(o.grid.gammaBig-1)/oN.Theta(t));
             dSHdp = -width/oN.Theta(t)*p./o.grid.gammaBig.*SH;
@@ -38,7 +39,7 @@ function Assemble(o,varargin)
             dSHdp = exp(-width*(o.grid.gammaBig-1)/oN.Theta(t)) ...
                     - width/oN.Theta(t)*p./o.grid.gammaBig.*SH;
             SHOverPAt0 = 1;
-        case 2 %p-weighted relativistic Maxwellian - leads to a small triangular peak at p=0
+        case 2 %p^2-weighted relativistic Maxwellian - leads to a small triangular peak at p=0
             width = 0.2;
             SH = p.^2.*oN.maxwellianPreFactor(t) ... 
                     .* exp(-width*(o.grid.gammaBig-1)/oN.Theta(t));
@@ -46,10 +47,10 @@ function Assemble(o,varargin)
                     - width/oN.Theta(t)*p./o.grid.gammaBig.*SH;
             SHOverPAt0 = 0;
         case 3
-            v0 = 0.004;
-            SH = p.^2 ./ (v0.^2 + (p ./ o.grid.gammaBig).^2);
-            dSHdp = 2 * p .* (v0.^2 + (p./o.grid.gammaBig).^4) ...
-                    ./ (v0^2 + (p./o.grid.gammaBig).^2).^2;
+            %v0 = 0.004;
+            p0 = sqrt(2*oN.Theta(t));
+            SH = 1 ./ (p0.^2 + (p ./ o.grid.gammaBig).^2);
+            dSHdp = -2 * p ./ (p0^2.*o.grid.gammaBig.^2 + p.^2).^2;
             SHOverPAt0 = 0;
         otherwise
             error('Invalid choice of heat sink p dependence')

@@ -79,6 +79,9 @@ classdef NORSE < matlab.mixin.Copyable
     %           electrons). If timeAdvanceMode = 2 is used, this is the
     %           inital time step.
     %   tMax -- Total calculation time (in the same units as dt).
+    %   ignoreZerothLegMode  -- Ignores the zeroth Legendre mode of the
+    %                           collision operator (implemented for better
+    %                           comparison with LUKE)
     %
     %   The class method GetRelativisticNormalization can be used to
     %   convert dt and tMax from thermal collision times to relativistic
@@ -99,6 +102,11 @@ classdef NORSE < matlab.mixin.Copyable
     %                            distribution and inductive electric-field 
     %                            evolution, using Newtons method in each 
     %                            time step.
+    %                         4: Constant time step, direct solution of
+    %                            linear system using the MUMPS library.
+    %                            Requires separate installation of MUMPS,
+    %                            the path of which should be specified in
+    %                            the variable 'mumpsPath'.
     %   GMRESTolerance  -- Convergence tolerance used in calls to GMRES.
     %                      The smaller, the more accurate the solution.
     %                      Default: 1e-12
@@ -112,7 +120,9 @@ classdef NORSE < matlab.mixin.Copyable
     %   nNewtonSteps    -- Number of Newton iterations to take in each time
     %                      step in scheme 3. A higher number should lead to
     %                      better converged results.
-    %
+    %   mumpsPath       -- If timeAdvanceMode = 4, this variable specifies
+    %                      the path to the directory containing the MUMPS
+    %                      MEX file.
     %
     % %%% Collision operator %%%
     %   collisionOperatorMode -- The electron-electron collision operator  
@@ -133,6 +143,15 @@ classdef NORSE < matlab.mixin.Copyable
     %                                   0: Accurate  (using integral)
     %                                   1: Efficient (using Simpson's rule)
     %                                Default: 1
+    %
+    % %%%  Avalanche Source %%%
+    %
+    %   WARNING -- The avalanche source is untested!
+    %   avalancheSourceMode -- The avalanche source term to use
+    %                            0: No avalanche source (S = 0)
+    %                            1: Chiu-Harvey source
+    %                            2: Embreus form of the Chiu-Harvey source
+    %                          Default: 0
     %
     % %%%  Program flow and behavior %%%
     %
@@ -216,6 +235,10 @@ classdef NORSE < matlab.mixin.Copyable
     %                       xi). Default: 0
     %                         0: Maxwellian, fM
     %                         1: p*fM
+    %                         2: p^2*fM
+    %                         3: (pc)^2 / (v0^2 + v^2), where v0 = 0.004c.
+    %   heatSinkMaxwellianWidth            -- Width of the Maxwellian, when
+    %                                         heatSinkFunction = 0 is used.
     %   enforceStrictHeatConservation      -- Tries to maintain the 
     %                                         temperature by making sure
     %                                         that any discrepancy in the
@@ -246,6 +269,24 @@ classdef NORSE < matlab.mixin.Copyable
     %                        dampening. Determines how large part of the
     %                        computational region close to pMax which is
     %                        affected by the damping. Default: 1.5 per cent
+    %
+    %   conservativeParticleSource -- Determines whether the particle
+    %                                 source should just try to follow
+    %                                 the density variation in the plasma
+    %                                 (as prescribed by n) or add an
+    %                                 additional conserving term to the
+    %                                 source magnitude that compensates for
+    %                                 the numeric drift of the density due
+    %                                 to non-conservation of density in
+    %                                 other terms of the kinetic equation.
+    %                                   0: Simple, non-conservative source
+    %                                      that only follows n
+    %                                   1: Approximately conservative that
+    %                                      simultaneously follows n and
+    %                                      tries to compensate for the
+    %                                      erroneous introduction of
+    %                                      particles
+    %                                 Default: 1
     %
     % %%%  Saving and printing %%%
     %
@@ -353,11 +394,15 @@ classdef NORSE < matlab.mixin.Copyable
         nStepsBetweenFactorizations = 2
         dtIncreaseLimit = 0
         nNewtonSteps = 2
+        mumpsPath = ''
         
         %Collision operator
         collisionOperatorMode     = 0
         potentialCutOff           = 1e-30
         specialFunctionEvaluation = 1
+        
+        %Avalanche source term
+        avalancheSourceMode = 0
         
         %Program flow and behavior 
         initialDistribution   = 0
@@ -375,11 +420,13 @@ classdef NORSE < matlab.mixin.Copyable
         includeHeatSink  = 0 
         heatSinkCutOff   = 5 
         heatSinkFunction = 0
+        heatSinkMaxwellianWidth = 1
         enforceStrictHeatConservation = 0
         maxHeatSinkRate = 0
         keepTempConstantWhenDensityChanges = 1 
         dampeningStrength = 0
         dampeningWidth = 1.5
+        conservativeParticleSource = 1
         
         %Saving and output
         nSaveSteps = 0
@@ -397,6 +444,7 @@ classdef NORSE < matlab.mixin.Copyable
         pMax
         dt
         tMax        
+        ignoreZerothLegMode = 0
         
         T                
         n               
@@ -514,6 +562,7 @@ classdef NORSE < matlab.mixin.Copyable
         particleSource
         timeAdvance
         plot
+        avalancheSource
         
         %%%%%%%%%%%%%%%%%
         
@@ -681,6 +730,8 @@ classdef NORSE < matlab.mixin.Copyable
         ProcessPhysicalParameters(o)
             % Verifies the provided physical parameters and calculates
             % aggreagate quantities needed in NORSE.
+        InitializeAvalancheSource(o)
+            % Initialize the proper AvalancheSource object (if any)
         InitializeTAandC(o)
             % Initializes the proper TimeAdvance and CollisionOperator
             % objects, depending on the settings.

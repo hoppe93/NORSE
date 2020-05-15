@@ -57,6 +57,7 @@ function Initialize(o, varargin)
                       'collOp',0,...
                       'matrixInversion',0,...
                       'matrixFactorization',0,...
+                      'mumpsAnalysis',0,...
                       'GMRES',0,...
                       'postProcess',0,...
                       'separatrix',0,...
@@ -84,6 +85,13 @@ function Initialize(o, varargin)
     o.InitializeTAandC();
     o.collisionOperator.InitializeParts();    
 
+    
+    %%% Avalanche source object
+    o.InitializeAvalancheSource();
+    
+    if ~isempty(o.avalancheSource)
+        o.avalancheSource.Initialize();
+    end
 
     %%% Assemble the other components of the matrix               
     o.AssembleEFieldOperator();                                                
@@ -91,7 +99,7 @@ function Initialize(o, varargin)
 
     %Initialize the particle source before the heat sink!
     o.particleSource = ParticleSource(o);
-    o.heatSink = HeatSink(o);            
+    o.heatSink = HeatSink(o);
 
     %Initialize save array for source magnitudes       
     s = o.heatSink.magnitudeStructTemplate;
@@ -228,6 +236,11 @@ function Initialize(o, varargin)
     fls  = o.MapBigVectorToLegModes(f);
     o.potentials.Update(fls);
     o.collisionOperator.Assemble(0);
+    
+    if ~isempty(o.avalancheSource)
+        o.avalancheSource.Assemble(0,f);
+    end
+    
     o.heatSink.CalculateEnergyChangeMagnitude(f,0,0);                
     o.timeAdvance.SaveStepData(1,f,0);
 

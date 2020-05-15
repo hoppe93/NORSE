@@ -37,7 +37,7 @@ function Initialize1DTimeEvolutionPlot(o)
 
     xlabel('$p_{||}$','fontsize',14,'Interpreter','latex');
     ylabel('$F$ (at $\xi\!=\!1$)','fontsize',14,'Interpreter','latex');
-    leg = legend('Initial','$F_{\mathrm{pos}}(t)$','$F_{\mathrm{neg}}(t)$');
+    %leg = legend('Initial','$F_{\mathrm{pos}}(t)$','$F_{\mathrm{neg}}(t)$');
     set(gca,'fontsize',12,'linewidth',lw,'ytick',10.^(-25:5:0));
-    set(leg,'linewidth',1.5,'Interpreter','latex');
+    %set(leg,'linewidth',1.5,'Interpreter','latex');
 end

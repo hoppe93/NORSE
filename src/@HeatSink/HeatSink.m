@@ -66,7 +66,7 @@ classdef HeatSink < matlab.mixin.Copyable
         heatSinkOperator
         preFactor
         energyChangeInt
-        densityInt                
+        densityInt
         magnitudeStructTemplate
         rateNormalization
         rateCutOff

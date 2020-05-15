@@ -1,4 +1,4 @@
-function Update(o,t,tOld)
+function Update(o,t,tOld,fOld,matrix,rhs)
     % Updates and returns the properly scaled sink.
     %
     % Usage:
@@ -9,6 +9,6 @@ function Update(o,t,tOld)
     %
     % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    o.BuildAndCalculateMagnitude(t,tOld);
+    o.BuildAndCalculateMagnitude(t,tOld,fOld,matrix,rhs);
     o.source = o.densityChangeMagnitude*o.particleSourceOperator;
 end

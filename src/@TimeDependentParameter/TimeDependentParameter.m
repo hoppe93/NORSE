@@ -96,6 +96,8 @@ classdef TimeDependentParameter
                     o.parameterSpline = f; %Store the value directly
                     o.tMin = t;
                     o.tMax = t;
+                    o.fMin = f;
+                    o.fMax = f;
                 otherwise                    
                     if o.isStepWiseConst
                         %Determine where f changes value and make a spline
@@ -114,6 +116,8 @@ classdef TimeDependentParameter
                     end 
                     o.tMin = t(1);
                     o.tMax = t(end);
+                    o.fMin = min(f);
+                    o.fMax = max(f);
             end
         end
         
@@ -135,7 +139,10 @@ classdef TimeDependentParameter
         parameterSpline
         tMin = 0
         tMax = 0
-        isScalar = 0         
+        isScalar = 0
+        % Maximum and minimum parameter values
+        fMax = 0
+        fMin = 0
     end
     
     methods %%% Utilities for indexing and overloaded operators %%% 

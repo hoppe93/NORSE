@@ -37,6 +37,7 @@ classdef TAIterative < TimeAdvance
         Q
         
         convergenceFlag = false
+        iterationsFlag = false
     end
     
     methods 

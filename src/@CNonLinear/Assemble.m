@@ -8,7 +8,7 @@ function Assemble(o,t)
     %
     % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-    tBuild = tic;    
+    tBuild = tic;
 
     %Helper function for diagonal matrices, to reduce clutter
     dia = @(v) spdiags(v,0,o.grid.matSize,o.grid.matSize); 
@@ -69,8 +69,13 @@ function Assemble(o,t)
     C(end,idsLastRow) = o.grid.ddpMat(end,idsLastRow); %Boundary condition at p=0    
     % Apply boundary condition at p=pMax. These lines are slow
     % compared to the other lines! 
-    C(o.grid.idsPMax,:) = 0;                               
-    C(sub2ind(size(C),o.grid.idsPMax,o.grid.idsPMax)) = 1; 
+    C(o.grid.idsPMax,:) = 0;              
+    
+    % Setting C using linear indices seems _much_ slower than
+    % setting them using index pairs (factor of ~10 slower).
+    % Result should be the same.
+    %C(sub2ind(size(C),o.grid.idsPMax,o.grid.idsPMax)) = 1;
+    C(o.grid.idsPMax, o.grid.idsPMax) = 1;
                % Accesses all elements corresponding to pMax on the
                % diagonal to enforce F(pMax)=0.
     o.C = C;             

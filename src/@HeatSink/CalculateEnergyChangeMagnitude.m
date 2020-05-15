@@ -61,8 +61,15 @@ function CalculateEnergyChangeMagnitude(o,f,t,tOld)
         end
     end
 
-    %%% Compensate for E field, collisions and synchrotron losses                            
-    EInt = o.energyChangeInt*(oN.EHat(t)*oN.EFieldOperator*f);
+    %%% Compensate for E field, collisions and synchrotron losses
+    EInd_i = find(oN.EHatInductive, 1, 'last');
+    if ~isempty(EInd_i)
+        EStrength = oN.EHat(t) + oN.EHatInductive(EInd_i);
+    else
+        EStrength = oN.EHat(t);
+    end
+    
+    EInt = o.energyChangeInt*(EStrength*oN.EFieldOperator*f);
     CInt = o.energyChangeInt*(oN.collisionOperator.C*f);
     RRInt = o.energyChangeInt*(oN.sigma(t)*oN.synchrotronOperator*f);                                    
     sMagn.E = EInt/SHInt;

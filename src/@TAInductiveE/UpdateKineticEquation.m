@@ -20,25 +20,37 @@ function UpdateKineticEquation(o,fOld,t,tOld)
     oN.collisionOperator.Assemble(t);
 
     %Update the heat and particle sources
-    oN.particleSource.Update(t,tOld);
     oN.heatSink.Update(fOld,t,tOld);
 
     %Assemble the matrix components
     oG = oN.grid;    
     dt = t-tOld;
     
+    %Update the avalanche source and fetch
+    %its result (if it exists)
+    if ~isempty(oN.avalancheSource)
+        oN.avalancheSource.Assemble(t, fOld);
+        avaS = oN.avalancheSource.S * dt;
+    else
+        avaS = 0;
+    end
+    
     AHat = oN.sigma(t)*oN.synchrotronOperator...
            + oN.collisionOperator.C ...
            + oN.heatSink.sink;
+    rhs = avaS;
+    
+    % Build and update particle source
+    oN.particleSource.Update(t,tOld,fOld,AHat,rhs);
     
     o.inductiveCoefficients.R1 = oN.identityWithBoundaryConditions - dt*AHat;
     
-    o.inductiveCoefficients.R2 = -dt*oN.EFieldOperator; 
+    o.inductiveCoefficients.R2 = -dt*oN.EFieldOperator;
                 %The minus sign is required, since EFieldOperator is
                 %defined with a minus sign.
     
     %The old right-hand side is now in R3    
-    o.inductiveCoefficients.R3 = -fOld - oN.particleSource.source;
+    o.inductiveCoefficients.R3 = -fOld - oN.particleSource.source - rhs;
     o.inductiveCoefficients.R3(end) = 0; %Neumann boundary condition at p=0
     o.inductiveCoefficients.R3(oG.idsPMax) = 0; %Dirichlet boundary condition at p=pMax
     

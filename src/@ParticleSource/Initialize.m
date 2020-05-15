@@ -7,7 +7,7 @@ function Initialize(o)
     %
     % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    if ~o.norse.n.isScalar 
+    if ~o.norse.n.isScalar || o.norse.conservativeParticleSource > 0
         %Density changes will have to be made -- make
         %time-dependent parameters for aP and the source density
         %moment

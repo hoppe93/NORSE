@@ -27,6 +27,7 @@ classdef TADirect < TimeAdvance
     %%% Internal properties and methods %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
     methods 
+
         function o = TADirect(varargin)
             % Constructor.
             %
@@ -37,6 +38,9 @@ classdef TADirect < TimeAdvance
             o@TimeAdvance(varargin{:});
             o.CalculateNumberOfSteps();
         end        
+
+        InitializeMUMPS(o, mumpsPath)
+
     end 
     
 end

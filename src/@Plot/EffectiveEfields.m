@@ -23,7 +23,7 @@ function EffectiveEfields(o)
         [EEcI,EEDI] = oN.CalculateEffectiveEFields('inductive');
     end
 
-    if any(EEc)  
+    if any(EEc) || any(EEcI)
         figure(o.GetFigId('EffectiveEfields'));
         clf;
 

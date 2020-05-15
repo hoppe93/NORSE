@@ -42,7 +42,7 @@ function Moments(o)
     data = -rate;
     data(~isNeg) = 0;
     o.FunctionOfTime(log10(data),...
-                    '$\log_{10}(n^{-1} \mathrm {d}n_r/\mathrm {d}\tau)$',1,1);
+                    '$\log_{10}(\mathrm {d}n_r/\mathrm {d}\tau)$',1,1);
     if any(data)
         hL = legend('Positive','Negative','Location','Best');
         hL.Interpreter = 'latex';

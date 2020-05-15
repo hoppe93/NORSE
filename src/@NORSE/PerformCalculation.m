@@ -1,6 +1,6 @@
 function PerformCalculation(o, varargin)
     %Carries out the various steps in a standard NORSE calculation. Optionally 
-    %uses an existing Grid object set in the NORSE class property grid -- 
+    %uses and existing Grid object set in the NORSE class property grid -- 
     %otherwise a new grid is generated using the settings in the NORSE object.
     %
     % Usage:

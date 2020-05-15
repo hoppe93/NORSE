@@ -47,6 +47,7 @@ function AdvanceInTime(o,varargin)
         t = o.allTimes(iteration);
         tOld = o.allTimes(iteration-1);
         isSaveStep = (iteration == o.idsToSave(iSave));
+        o.iTimeStep = iSave;
 
         o.PrintProgress(isSaveStep,iSave,iteration);
         o.UpdateKineticEquation(fOld,t,tOld); %Build the system to solve
@@ -68,7 +69,8 @@ function AdvanceInTime(o,varargin)
             o.gmresFlags(iteration) = flag;
             o.gmresIters(iteration) = iter(2);
             tEndSolve = tEndSolve+toc(tStartSolve);
-            o.PrintConvergenceWarning(flag);                    
+            o.PrintConvergenceWarning(flag);
+            o.PrintIterationWarning(iter);
         end
 
         if isSaveStep %Save the current state 

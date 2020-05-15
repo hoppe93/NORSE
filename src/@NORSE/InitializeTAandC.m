@@ -20,6 +20,12 @@ function InitializeTAandC(o)
                     o.timeAdvance = TAAdaptive(o);
                 case 3
                     o.timeAdvance = TAInductiveE(o);
+                case 4
+                    if ~isempty(o.mumpsPath)
+                        o.timeAdvance = TAMUMPS(o.mumpsPath, o);
+                    else
+                        o.timeAdvance = TAMUMPS(o);
+                    end
                 otherwise
                     error('Invalid time-advance mode');
             end
@@ -27,7 +33,7 @@ function InitializeTAandC(o)
 			error('The linear collision operator is not available yet.');                       
         otherwise
             error('Invalid collision operator.')
-    end  
+    end
     
     o.Print('   The collision operator is %s.\n',str);
 end

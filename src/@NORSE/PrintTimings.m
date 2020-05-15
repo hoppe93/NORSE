@@ -39,6 +39,13 @@ function PrintTimings(o)
                                         tNewton);
                 fprintf('      - Average time to solve the system: %f s (%.1f%%)\n',...
                                         tInvert,100*tInvert/tPerTimeStep);
+            case 4
+                tInvert = t.matrixInversion/o.nTimeSteps;
+                tAnalyse = t.mumpsAnalysis/o.nTimeSteps;
+                fprintf('      - Average time to solve the system: %f s (%.1f%%)\n',...
+                                        tInvert,100*tInvert/tPerTimeStep);
+                fprintf('        - Average time to analyse the system: %f s (%.1f%%)\n',...
+                                        tAnalyse,100*tAnalyse/tPerTimeStep);
             otherwise
                 warning('Cannot print timings -- unknown time advance mode');
         end

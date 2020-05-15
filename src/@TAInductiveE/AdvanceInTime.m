@@ -37,6 +37,7 @@ function AdvanceInTime(o,varargin)
         t = o.allTimes(iteration);
         tOld = o.allTimes(iteration-1);
         isSaveStep = (iteration == o.idsToSave(iSave));
+        o.iTimeStep = iSave;
 
         o.PrintProgress(isSaveStep,iSave,iteration); 
         o.UpdateKineticEquation(fOld,t,tOld); 
@@ -58,7 +59,7 @@ function AdvanceInTime(o,varargin)
         iSave = o.CheckAbortCriterion(fOld,t,isSaveStep,iSave,iteration);
         if o.abortFlag 
             break
-        end 
+        end
     end
 
     %Save the time step lengths used. This is for compliance with

@@ -35,7 +35,7 @@ classdef ParticleSource < matlab.mixin.Copyable
         Initialize(o)
             % Initializes the quantities necessary for the particle
             % source/sink.
-        Update(o,t,tOld)
+        Update(o,t,tOld,fOld,matrix,rhs)
             % Updates and returns the properly scaled sink.
     end    
     
@@ -84,10 +84,10 @@ classdef ParticleSource < matlab.mixin.Copyable
             end            
         end
         
-        BuildAndCalculateMagnitude(o,t,tOld)
-            % Builds the particle source operator and calculates the
-            % appropriate magnitude to perform specified changes to the
-            % electron density.
+        BuildAndCalculateMagnitude(o,t,tOld,fOld,matrix,rhs)
+            % Builds the conservative particle source operator and
+            % calculates the appropriate magnitude to perform specified
+            % changes to the electron density.
         GetSize(o) 
             % Calculates the size in memory of the PARTICLESOURCE object by
             % looping through the fields and summing up the variable sizes,
